@@ -49,6 +49,7 @@ class vote_start:
         if not isinstance(event, GroupMessageEvent): return
         if not await auth(bot, event): return
 
+        global vote_started
         vote_started = True
 
         await bot.send(event, Message("请各组织代表开始投票，'1'表示同意, '2'表示反对, '3'表示弃权"))
@@ -103,6 +104,12 @@ class vote_end:
             vote_outcome_final = vote_outcome_final[1:]  # 去除开头多余的"\n"
 
         total_vote_count = TeamMapper.getTotalVoteCount()
+
+        # 清空标志位以及存储数组
+        global vote_started
+        vote_started = False
+        for i in range(100):
+            vote_count[i] = {}
 
         # 总票数是指，所有有代表的团队的票数之和，也就是所有能投票的活跃玩家数量
         # 投票参与是指，该次投票参与投票的人数
